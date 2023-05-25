@@ -3,7 +3,7 @@
 ⚡ Crawling all information you want on the Internet with GPT-3.5. Built with 🦜️🔗[LangChain](https://github.com/hwchase17/langchain)👍👍⚡
 
 ## Simple Demo
-
+https://github.com/gh18l/CrawlGPT/assets/16774158/1b3e42e0-e425-459d-a897-8761f7c1ce11
 
 ## Quick Install
 
