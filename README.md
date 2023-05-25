@@ -16,6 +16,14 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf1
 - Run it: `python pipeline.py > output.txt`.
 - Read results from `final_dict.json`.
 
+✍️👇 A simple example 👇✍️
+- the theme you want to crawl: `Cases of mergers and acquisitions of fast food industry enterprises in China after 2010`
+- 0-th specific detail: `When the merger occurred`
+- 1-th specific detail: `Acquirer`
+- 2-th specific detail: `Acquired party`
+- 3-th specific detail: `The CEO of acquirer`
+- 4-th specific detail: `The CEO of acquired party`
+
 ## What it can do?
 
 - Simulate the process of humans searching for data as much as possible.
