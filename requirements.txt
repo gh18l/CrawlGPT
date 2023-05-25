@@ -1,0 +1,4 @@
+langchain
+openai
+bs4
+tiktoken
