@@ -207,7 +207,7 @@ def main():
                         final_list.append(completed_detail_dict)
             visited_url.append(url)
         queried_list.append(current_query)
-    final_dict = {"details_num":len(final_list), "details": final_list}
+    final_dict = {"events_num":len(final_list), "details": final_list}
     # save dict 
     with open("final_dict.json", "w") as f:
         json.dump(final_dict, f, indent=4, ensure_ascii=False)
