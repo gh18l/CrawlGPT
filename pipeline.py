@@ -1,10 +1,7 @@
 import os
 import json
 from typing import List
-os.environ["OPENAI_API_KEY"] = "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"
-import openai
-openai.organization = "org-2SJWplAgOe6VycEDktR4Ijkd"
-openai.api_key = "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"
+os.environ["OPENAI_API_KEY"] = ""
 os.environ["SERPER_API_KEY"] = "1ab03c5884c2bc2dd5f2df3ddb8d86684716cbd4"  # only used by testing
 from langchain import PromptTemplate, OpenAI, LLMChain
 from langchain.agents import load_tools, AgentExecutor
