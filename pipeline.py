@@ -72,6 +72,7 @@ RESPONSE FORMAT:
 Ensure the response can be parsed by Python json.loads. The list length of the "details" in the response depends on how many pieces of information you find about {theme} from context. You should find as much information as possible.
 
 Unless you are very sure the specific details appear in context and the specific details is absolutely correct, replace the <answer> with "XXX", don't try to make up any answer."""
+    print(template_for_details_extractor)
     details_extractor_prompt = PromptTemplate(template=template_for_details_extractor, input_variables=["context", "theme"])
     details_extractor_chain = LLMChain(prompt=details_extractor_prompt, llm=OpenAI(temperature=0, max_tokens=-1), verbose=False) 
     
@@ -158,7 +159,8 @@ def main():
     print(">>>>>>>>>>>The theme of web crawler is: ", THEME)
     print(">>>>>>>>>>>The specific details of the web crawler theme are: ", DETAIL_LIST)
     print(">>>>>>>>>>>The valid web domain or url prefix is: ", URL_DOMAIN_LIST)
-    
+    print("\n\n\n")
+
     # get google query chain
     google_query_chain = get_google_query_chain()
     details_extractor_chain = get_details_extractor_chain(DETAIL_LIST)
@@ -170,7 +172,6 @@ def main():
         current_query = get_google_query(google_query_chain, THEME, queried, 0==q)
         print("............Searching using Google.......... ")
         print(current_query)
-        print("\n\n")
         for domain in URL_DOMAIN_LIST:
             url_list = google_search(query=current_query, num=QUERY_RESULTS_NUM, url_domain=domain)
             
@@ -185,7 +186,6 @@ def main():
                     continue
                 print("............Reading url content.......... ")
                 print(url)
-                print("\n")
                 # get raw content from website
                 website_content = get_website_content_with_bs(url)
 
