@@ -16,6 +16,13 @@ from langchain.text_splitter import TokenTextSplitter
 QUERY_NUM = 3
 QUERY_RESULTS_NUM = 5
 
+# The web crawler must crawl in specific web domain or url prefix. Refer to the usage of "site" in google search: https://developers.google.com/search/docs/monitor-debug/search-operators/all-search-site    query+site:url
+URL_DOMAIN_LIST = [""]
+if len(URL_DOMAIN_LIST) == 0:
+    URL_DOMAIN_LIST.append("")
+
+THEME = "Cases of mergers and acquisitions of fast food industry enterprises in China after 2010"
+DETAIL_LIST = ["When the merger occurred", "Acquirer", "Acquired party", "The CEO of acquirer", "The CEO of acquired party"]
 
 def get_google_query_chain() -> LLMChain:
     """get a google query chain.
@@ -87,12 +94,14 @@ def get_google_query(google_query_chain: LLMChain, theme: str, queried: str, is_
     else:
         return google_query_chain.predict(theme=theme, queried=queried).replace("\n", "").replace("\r", "")
 
-def google_search(query: str, num: int) -> List:
+def google_search(query: str, num: int, url_domain: str = "") -> List:
     """Return the results of a google search"""
     
     query_for_search = query.replace('"', '').replace("+", "%2B").replace(' ', '%20').replace("&", "%26").replace("/", "%2F").replace("?", "%3F").replace("#", "%23").replace("=", "%3D")
-    url_for_search = f"https://google.com/search?q={query_for_search}"
-    print("url_for_search", url_for_search)
+    if url_domain == "": 
+        url_for_search = f"https://google.com/search?q={query_for_search}"
+    else:
+        url_for_search = f"https://google.com/search?q={query_for_search}%20site:url_domain"
     USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
     headers = {"user-agent" : USER_AGENT}
     resp = requests.get(url_for_search, headers=headers)
@@ -142,70 +151,63 @@ def check_dict(json_input: str) -> bool:
     return False
 
 def main():
-    detail_list = []
     final_list = []
     queried_list = []
     visited_url = []
     
-    # get input from keyboard
-    theme = input("Please enter the theme you want to crawl: ")
-    ind = 0
-    while(1):
-        detail_input = input("Please enter the {}-th specific detail of the theme you want to crawl: ".format(ind))
-        if detail_input == "":
-            break
-        else:   
-            detail_list.append(detail_input)
-        ind = ind + 1
-    print("theme is ", theme)
-    
-    print("detail_list is: ", detail_list) 
+    print(">>>>>>>>>>>The theme of web crawler is: ", THEME)
+    print(">>>>>>>>>>>The specific details of the web crawler theme are: ", DETAIL_LIST)
+    print(">>>>>>>>>>>The valid web domain or url prefix is: ", URL_DOMAIN_LIST)
     
     # get google query chain
     google_query_chain = get_google_query_chain()
-    details_extractor_chain = get_details_extractor_chain(detail_list)
+    details_extractor_chain = get_details_extractor_chain(DETAIL_LIST)
     details_completer_agent = get_details_completer_agent()
     
     # start google query
     for q in range(QUERY_NUM):
         queried = ", ".join(queried_list)
-        current_query = get_google_query(google_query_chain, theme, queried, 0==q)
-        url_list = google_search(query=current_query, num=QUERY_RESULTS_NUM)
-        
-        # browse each website
-        for index, url_dict in enumerate(url_list):
-            url = url_dict["href"]
-            if ".pdf" in url:
-                print("The {}-th url of {}-th query is pdf, currently don't support resolve pdf".format(index, q))
-                continue
-            if url in visited_url:
-                print("The {}-th url of {}-th query is repeated".format(index, q))
-                continue
+        current_query = get_google_query(google_query_chain, THEME, queried, 0==q)
+        print("............Searching using Google.......... ")
+        print(current_query)
+        print("\n\n")
+        for domain in URL_DOMAIN_LIST:
+            url_list = google_search(query=current_query, num=QUERY_RESULTS_NUM, url_domain=domain)
             
-            # get raw content from website
-            website_content = get_website_content_with_bs(url)
+            # browse each website
+            for index, url_dict in enumerate(url_list):
+                url = url_dict["href"]
+                if ".pdf" in url:
+                    # print("The {}-th url of {}-th query is pdf, currently don't support resolve pdf".format(index, q))
+                    continue
+                if url in visited_url:
+                    # print("The {}-th url of {}-th query is repeated".format(index, q))
+                    continue
+                print("............Reading url content.......... ")
+                print(url)
+                print("\n")
+                # get raw content from website
+                website_content = get_website_content_with_bs(url)
 
-            # split website content if it is too long
-            website_content_list = split_text_economical(website_content, chunk_size=1000, chunk_overlap=20)
-            
-            # extract specific details from each website chunk
-            for chunk in website_content_list:
-                chain_output = details_extractor_chain.predict(context=chunk, theme=theme)
-                print("chain_output is, ", chain_output)
-                chain_output_parse = json.loads(chain_output[chain_output.find("{"):])
-                details_extracted = chain_output_parse["details"]
-                if check_dict(details_extracted):
-                    for ind, detail in enumerate(details_extracted):
-                        if "XXX" in detail.values():
-                            _detail = json.dumps(detail, indent=4, ensure_ascii=False)
-                            completed_detail = details_completer_agent.run(_detail)
-                            print("completed_detail, ", completed_detail)
-                            completed_detail_dict = json.loads(completed_detail[completed_detail.find("{"):])
-                        else:
-                            completed_detail_dict = detail
-                        completed_detail_dict["source_url"] = url
-                        final_list.append(completed_detail_dict)
-            visited_url.append(url)
+                # split website content if it is too long
+                website_content_list = split_text_economical(website_content, chunk_size=1000, chunk_overlap=20)
+                
+                # extract specific details from each website chunk
+                for chunk in website_content_list:
+                    chain_output = details_extractor_chain.predict(context=chunk, theme=THEME)
+                    chain_output_parse = json.loads(chain_output[chain_output.find("{"):])
+                    details_extracted = chain_output_parse["details"]
+                    if check_dict(details_extracted):
+                        for ind, detail in enumerate(details_extracted):
+                            if "XXX" in detail.values():
+                                _detail = json.dumps(detail, indent=4, ensure_ascii=False)
+                                completed_detail = details_completer_agent.run(_detail)
+                                completed_detail_dict = json.loads(completed_detail[completed_detail.find("{"):])
+                            else:
+                                completed_detail_dict = detail
+                            completed_detail_dict["source_url"] = url
+                            final_list.append(completed_detail_dict)
+                visited_url.append(url)
         queried_list.append(current_query)
     final_dict = {"events_num":len(final_list), "details": final_list}
     # save dict 
