@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 os.environ["SERPER_API_KEY"] = "1ab03c5884c2bc2dd5f2df3ddb8d86684716cbd4"  # only used by testing
 from langchain import PromptTemplate, OpenAI, LLMChain
 from langchain.agents import load_tools, AgentExecutor
@@ -72,7 +72,6 @@ RESPONSE FORMAT:
 Ensure the response can be parsed by Python json.loads. The list length of the "details" in the response depends on how many pieces of information you find about {theme} from context. You should find as much information as possible.
 
 Unless you are very sure the specific details appear in context and the specific details is absolutely correct, replace the <answer> with "XXX", don't try to make up any answer."""
-    print(template_for_details_extractor)
     details_extractor_prompt = PromptTemplate(template=template_for_details_extractor, input_variables=["context", "theme"])
     details_extractor_chain = LLMChain(prompt=details_extractor_prompt, llm=OpenAI(temperature=0, max_tokens=-1), verbose=False) 
     
