@@ -2,6 +2,10 @@
 import datetime
 from typing import List, Optional
 
+from langchain.callbacks.manager import (
+    AsyncCallbackManagerForLLMRun,
+    CallbackManagerForLLMRun,
+)
 from langchain.llms import OpenAI, OpenAIChat
 from langchain.schema import LLMResult
 
@@ -16,6 +20,7 @@ class PromptLayerOpenAI(OpenAI):
 
     All parameters that can be passed to the OpenAI LLM can also
     be passed here. The PromptLayerOpenAI LLM adds two optional
+
     parameters:
         ``pl_tags``: List of strings to tag the request with.
         ``return_pl_id``: If True, the PromptLayer request ID will be
@@ -33,13 +38,16 @@ class PromptLayerOpenAI(OpenAI):
     return_pl_id: Optional[bool] = False
 
     def _generate(
-        self, prompts: List[str], stop: Optional[List[str]] = None
+        self,
+        prompts: List[str],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
     ) -> LLMResult:
         """Call OpenAI generate and then call PromptLayer API to log the request."""
         from promptlayer.utils import get_api_key, promptlayer_api_request
 
         request_start_time = datetime.datetime.now().timestamp()
-        generated_responses = super()._generate(prompts, stop)
+        generated_responses = super()._generate(prompts, stop, run_manager)
         request_end_time = datetime.datetime.now().timestamp()
         for i in range(len(prompts)):
             prompt = prompts[i]
@@ -69,12 +77,15 @@ class PromptLayerOpenAI(OpenAI):
         return generated_responses
 
     async def _agenerate(
-        self, prompts: List[str], stop: Optional[List[str]] = None
+        self,
+        prompts: List[str],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[AsyncCallbackManagerForLLMRun] = None,
     ) -> LLMResult:
         from promptlayer.utils import get_api_key, promptlayer_api_request_async
 
         request_start_time = datetime.datetime.now().timestamp()
-        generated_responses = await super()._agenerate(prompts, stop)
+        generated_responses = await super()._agenerate(prompts, stop, run_manager)
         request_end_time = datetime.datetime.now().timestamp()
         for i in range(len(prompts)):
             prompt = prompts[i]
@@ -114,6 +125,7 @@ class PromptLayerOpenAIChat(OpenAIChat):
 
     All parameters that can be passed to the OpenAIChat LLM can also
     be passed here. The PromptLayerOpenAIChat adds two optional
+
     parameters:
         ``pl_tags``: List of strings to tag the request with.
         ``return_pl_id``: If True, the PromptLayer request ID will be
@@ -131,13 +143,16 @@ class PromptLayerOpenAIChat(OpenAIChat):
     return_pl_id: Optional[bool] = False
 
     def _generate(
-        self, prompts: List[str], stop: Optional[List[str]] = None
+        self,
+        prompts: List[str],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
     ) -> LLMResult:
         """Call OpenAI generate and then call PromptLayer API to log the request."""
         from promptlayer.utils import get_api_key, promptlayer_api_request
 
         request_start_time = datetime.datetime.now().timestamp()
-        generated_responses = super()._generate(prompts, stop)
+        generated_responses = super()._generate(prompts, stop, run_manager)
         request_end_time = datetime.datetime.now().timestamp()
         for i in range(len(prompts)):
             prompt = prompts[i]
@@ -167,12 +182,15 @@ class PromptLayerOpenAIChat(OpenAIChat):
         return generated_responses
 
     async def _agenerate(
-        self, prompts: List[str], stop: Optional[List[str]] = None
+        self,
+        prompts: List[str],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[AsyncCallbackManagerForLLMRun] = None,
     ) -> LLMResult:
         from promptlayer.utils import get_api_key, promptlayer_api_request_async
 
         request_start_time = datetime.datetime.now().timestamp()
-        generated_responses = await super()._agenerate(prompts, stop)
+        generated_responses = await super()._agenerate(prompts, stop, run_manager)
         request_end_time = datetime.datetime.now().timestamp()
         for i in range(len(prompts)):
             prompt = prompts[i]

@@ -4,6 +4,7 @@ from typing import Any, Dict, Generic, List, Mapping, Optional, TypeVar, Union
 
 from pydantic import Extra, root_validator
 
+from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.llms.base import LLM
 from langchain.llms.utils import enforce_stop_tokens
 
@@ -181,7 +182,7 @@ class SagemakerEndpoint(LLM):
                 ) from e
 
         except ImportError:
-            raise ValueError(
+            raise ImportError(
                 "Could not import boto3 python package. "
                 "Please install it with `pip install boto3`."
             )
@@ -201,7 +202,12 @@ class SagemakerEndpoint(LLM):
         """Return type of llm."""
         return "sagemaker_endpoint"
 
-    def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
+    def _call(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
+    ) -> str:
         """Call out to Sagemaker inference endpoint.
 
         Args:
