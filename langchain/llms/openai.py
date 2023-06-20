@@ -210,6 +210,7 @@ class BaseOpenAI(BaseLLM):
 
     @root_validator()
     def validate_environment(cls, values: Dict) -> Dict:
+        print("values is ", values)
         """Validate that api key and python package exists in environment."""
         values["openai_api_key"] = get_from_dict_or_env(
             values, "openai_api_key", "OPENAI_API_KEY"
