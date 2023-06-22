@@ -3,7 +3,7 @@
 ⚡ Fully automated web crawler. Crawling all information you want on the Internet with GPT-3.5. Built with 🦜️🔗[LangChain](https://github.com/hwchase17/langchain)👍👍⚡
 
 ## Simple Demo
-https://youtu.be/0HMqzhWaBP8
+https://github.com/gh18l/CrawlGPT/assets/16774158/593fc8f3-71d1-45fb-aca1-0bfc6a92a996
 
 ## What it can do?
 

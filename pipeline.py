@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 # import openai
 # from dotenv import dotenv_values
 # config = dotenv_values('.env')
