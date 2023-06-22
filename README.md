@@ -12,13 +12,13 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/593fc8f3-71d1-45fb-aca1-0bfc6a
 - Automatically search for answers on the internet to fill in missing specified details while crawling.
 - ✍️👇A simple exmple👇✍️
     - Input: 
-        - the theme you want to crawl: `Cases of mergers and acquisitions of fast food industry enterprises in China after 2010`
+        - the theme you want to crawl: `Cases of mergers and acquisitions of fast food industry enterprises in America after 2010`
         - 0-th specific detail: `When the merger occurred`
         - 1-th specific detail: `Acquirer`
         - 2-th specific detail: `Acquired party`
         - 3-th specific detail: `The CEO of acquirer`
         - 4-th specific detail: `The CEO of acquired party`
-        - (Optional) Limited web domain: `["nytimes.com"`, `"cnn.com"]`
+        - (Optional) Limited web domain: `["nytimes.com", "cnn.com"]`
     - Output: JSON containing all specified details about the theme. The format of output is
         ```
         {
