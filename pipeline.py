@@ -1,7 +1,7 @@
 import os
 import json
 from typing import List
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 # import openai
 # from dotenv import dotenv_values
 # config = dotenv_values('.env')
@@ -17,17 +17,22 @@ import requests
 # splitter
 from langchain.text_splitter import TokenTextSplitter
 
-# Note 
-QUERY_NUM = 3
-QUERY_RESULTS_NUM = 5
+###########################  Hyper Parameters  ################################
+QUERY_NUM = 2
+QUERY_RESULTS_NUM = 4
 
-# The web crawler must crawl in specific web domain or url prefix. Refer to the usage of "site" in google search: https://developers.google.com/search/docs/monitor-debug/search-operators/all-search-site    query+site:url
-URL_DOMAIN_LIST = [""]
+# The web crawler must crawl in specific web domain or url prefix. 
+# If an empty string is specified, the web crawler will crawl in the whole internet. 
+# Refer to the usage of "site" in google search: https://developers.google.com/search/docs/monitor-debug/search-operators/all-search-site
+URL_DOMAIN_LIST = ["nytimes.com", "cnn.com"]
 if len(URL_DOMAIN_LIST) == 0:
     URL_DOMAIN_LIST.append("")
 
-THEME = "Cases of mergers and acquisitions of fast food industry enterprises in China after 2010"
+# The content you want to crawl
+THEME = "Cases of mergers and acquisitions of fast food industry in America after 2010"
 DETAIL_LIST = ["When the merger occurred", "Acquirer", "Acquired party", "The CEO of acquirer", "The CEO of acquired party"]
+
+###############################################################################
 
 def get_google_query_chain() -> LLMChain:
     """get a google query chain.
@@ -106,7 +111,7 @@ def google_search(query: str, num: int, url_domain: str = "") -> List:
     if url_domain == "": 
         url_for_search = f"https://google.com/search?q={query_for_search}"
     else:
-        url_for_search = f"https://google.com/search?q={query_for_search}%20site:url_domain"
+        url_for_search = f"https://google.com/search?q={query_for_search}%20site:{url_domain}"
     USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:65.0) Gecko/20100101 Firefox/65.0"
     headers = {"user-agent" : USER_AGENT}
     resp = requests.get(url_for_search, headers=headers)
@@ -163,7 +168,8 @@ def main():
     print(">>>>>>>>>>>The theme of web crawler is: ", THEME)
     print(">>>>>>>>>>>The specific details of the web crawler theme are: ", DETAIL_LIST)
     print(">>>>>>>>>>>The valid web domain or url prefix is: ", URL_DOMAIN_LIST)
-    print("\n\n\n")
+    print(">>>>>>>>>>>The Number of Google searches with different query is: ", QUERY_NUM)
+    print(">>>>>>>>>>>The number of results returned per search is: ", QUERY_RESULTS_NUM)
 
     # get google query chain
     google_query_chain = get_google_query_chain()
@@ -174,9 +180,12 @@ def main():
     for q in range(QUERY_NUM):
         queried = ", ".join(queried_list)
         current_query = get_google_query(google_query_chain, THEME, queried, 0==q)
-        print("............Searching using Google.......... ")
-        print(current_query)
+        
         for domain in URL_DOMAIN_LIST:
+            if domain != "":
+                print("\n\n\n...... Searching '{}' in '{}' ...... ". format(current_query, domain))
+            else:
+                print("\n\n\n...... Searching '{}' using Google ...... ". format(current_query))
             url_list = google_search(query=current_query, num=QUERY_RESULTS_NUM, url_domain=domain)
             
             # browse each website
@@ -188,8 +197,7 @@ def main():
                 if url in visited_url:
                     # print("The {}-th url of {}-th query is repeated".format(index, q))
                     continue
-                print("............Reading url content.......... ")
-                print(url)
+                print(".... Reading {}-th content in '{}' .... ".format(index, url))
                 # get raw content from website
                 website_content = get_website_content_with_bs(url)
 
@@ -199,14 +207,22 @@ def main():
                 # extract specific details from each website chunk
                 for chunk in website_content_list:
                     chain_output = details_extractor_chain.predict(context=chunk, theme=THEME)
-                    chain_output_parse = json.loads(chain_output[chain_output.find("{"):])
-                    details_extracted = chain_output_parse["details"]
+                    try:
+                        chain_output_parse = json.loads(chain_output[chain_output.find("{"):])
+                        details_extracted = chain_output_parse["details"]
+                    except:
+                        continue
                     if check_dict(details_extracted):
                         for ind, detail in enumerate(details_extracted):
                             if "XXX" in detail.values():
+                                print(".... Google for the missing information in {} .... ".format(detail))
                                 _detail = json.dumps(detail, indent=4, ensure_ascii=False)
                                 completed_detail = details_completer_agent.run(_detail)
-                                completed_detail_dict = json.loads(completed_detail[completed_detail.find("{"):])
+                                try:
+                                    completed_detail_dict = json.loads(completed_detail[completed_detail.find("{"):])
+                                except Exception as e:
+                                    print(".... Google for the missing information failed ...", e)
+                                    continue
                             else:
                                 completed_detail_dict = detail
                             completed_detail_dict["source_url"] = url

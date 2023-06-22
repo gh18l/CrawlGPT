@@ -3,12 +3,12 @@
 ⚡ Fully automated web crawler. Crawling all information you want on the Internet with GPT-3.5. Built with 🦜️🔗[LangChain](https://github.com/hwchase17/langchain)👍👍⚡
 
 ## Simple Demo
-https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf102e5ef
+https://youtu.be/0HMqzhWaBP8
 
 ## What it can do?
 
 - Fully automated web crawler. Simulate the process of humans searching for data as much as possible.
-- Automatically collect all specified details across the entire internet based on a given theme.
+- Automatically collect all specified details across the entire internet or given web domain based on a given theme.
 - Automatically search for answers on the internet to fill in missing specified details while crawling.
 - ✍️👇A simple exmple👇✍️
     - Input: 
@@ -18,6 +18,7 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf1
         - 2-th specific detail: `Acquired party`
         - 3-th specific detail: `The CEO of acquirer`
         - 4-th specific detail: `The CEO of acquired party`
+        - (Optional) Limited web domain: `["nytimes.com"`, `"cnn.com"]`
     - Output: JSON containing all specified details about the theme. The format of output is
         ```
         {
@@ -52,7 +53,7 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf1
 ## How it do?
 
 0. Thinking about suitable Google search queries based on the theme with GPT-3.5.
-1. Simulate Google search using each query.
+1. Simulate Google search in entire Internet or given web domain(if any) using each query.
 2. Browse every website.
 3. Extract specific details of the theme from the content of the website with GPT-3.5.
 4. Similar to Auto-GPT, it will independently search for missing details on the Internet based on the langchain implementation of [MRKL](https://arxiv.org/abs/2205.00445) and [ReAct](https://arxiv.org/abs/2210.03629).
@@ -62,8 +63,12 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf1
 
 - `OPENAI_API_KEY`: You must have a openai api key and modify `os.environ["OPENAI_API_KEY"]` in `pipeline.py`.
 - `SERPER_API_KEY`: For searching correct and real-time information, you need have a [google serper api key](https://serper.dev/). It will take you a short time to register. Modify `os.environ["SERPER_API_KEY"]` in `pipeline.py` and you have 1000 queries for free every month.
-- `QUERY_NUM`: Number of queris of google searching. Default is 3.
-- `QUERY_RESULTS_NUM`: Number of search results per query. Default is 5.
+- Hyper Parameters:
+    - `QUERY_NUM`: The Number of Google searches with different query. Default is 2.
+    - `QUERY_RESULTS_NUM`: The number of results returned per search. Default is 4.
+    - `THEME`: The theme of web crawler.
+    - `DETAIL_LIST`: The specific details of the web crawler theme.
+    - `(Optional) URL_DOMAIN_LIST`: The valid web domain or url prefix.
 - Install `python3.11`.
 - Install necessary dependencies: `pip install -r requirements.txt`
 - Run it: `python pipeline.py > output.txt`.
@@ -72,6 +77,7 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/d0c31318-37c9-4f2d-8673-85ddf1
 
 ## TODO
 
+- [x] Support crawl in given list of web domain.
 - [ ] The langchain implementation of [MRKL](https://arxiv.org/abs/2205.00445) and [ReAct](https://arxiv.org/abs/2210.03629) carries the risk of divergent output. That is, the content of response may exceed our limit.
 - [ ] Automatically write research reports based on crawling results.
 - [ ] GPT consumes a huge amount of token while browsing webpage😢. Reduce the consumption.
