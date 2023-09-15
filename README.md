@@ -83,3 +83,12 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/593fc8f3-71d1-45fb-aca1-0bfc6a
 - [ ] GPT consumes a huge amount of token while browsing webpage😢. Reduce the consumption.
 - [ ] Browse the PDF files from the pdf link in website.
 - [ ] Modify the entire pipeline to registration free(except for OpenAI).
+
+## Contact me
+I am currently working as an AI engineer at Alibaba in Beijing, China. I think communication can eliminate information gaps.
+
+I am interested in llm applications, such as conversational search, AI agent, external data enhancement, etc. Welcome to communicate via email(hanxyz1818@gmail.com) or WeChat (if you have one).
+
+I am also preparing to make an actual product. The most immature idea recently is about llm+tweet or llm+crypto. If you are also interested in them or you have some other ideas, also welcome to communicate.
+
+
