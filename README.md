@@ -84,7 +84,7 @@ https://github.com/gh18l/CrawlGPT/assets/16774158/593fc8f3-71d1-45fb-aca1-0bfc6a
 - [ ] Browse the PDF files from the pdf link in website.
 - [ ] Modify the entire pipeline to registration free(except for OpenAI).
 
-## Contact me
+## Contact me and communication
 I am currently working as an AI engineer at Alibaba in Beijing, China. I think communication can eliminate information gaps.
 
 I am interested in llm applications, such as conversational search, AI agent, external data enhancement, etc. Welcome to communicate via email(hanxyz1818@gmail.com) or WeChat (if you have one).
