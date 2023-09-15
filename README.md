@@ -91,6 +91,7 @@ I am interested in llm applications, such as conversational search, AI agent, ex
 
 I am also preparing to make an actual product. My most immature ideas recently is about llm+tweet, llm+crypto and llm+code. If you are also interested in them or you have some other ideas, also welcome to communicate.
 
-![微信](./image/HanXYZ.jpg)
-
+<p align="center">
+    <img src="./image/HanXYZ.jpg" width="300">
+</p>
 
