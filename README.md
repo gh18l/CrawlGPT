@@ -89,7 +89,7 @@ I am currently working as an AI engineer at Alibaba in Beijing, China. I think c
 
 I am interested in llm applications, such as conversational search, AI agent, external data enhancement, etc. Welcome to communicate via email(hanxyz1818@gmail.com) or WeChat (if you have one).
 
-I am also preparing to make an actual product. My immature ideas recently is about **llm+tweet**, **llm+crypto** and **llm+code**. If you are also interested in them or you have some other ideas, also welcome to contact me.
+I am also preparing to make an actual product. My immature ideas recently is about **llm+crypto** and **llm+code**. If you are also interested in them or you have some other ideas, also welcome to contact me.
 
 <p align="center">
     <img src="./image/HanXYZ.jpg" width="300">
